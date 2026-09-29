@@ -46,9 +46,9 @@
   }
 
   function humanTierLabel(tier) {
-    if (tier === "oral") return "Human oral";
-    if (tier === "spotlight") return "Human spotlight";
-    return "Human poster";
+    if (tier === "oral") return "ICML oral";
+    if (tier === "spotlight") return "ICML spotlight";
+    return "ICML poster";
   }
 
   function classLabel(value) {
@@ -90,8 +90,8 @@
     });
     const phaseLabels = element("div", "method-phase-labels");
     phaseLabels.append(
-      element("span", "", "Progressive paper evaluation"),
-      element("span", "", "Hybrid tournament"),
+      element("span", "", "Scoring and narrowing"),
+      element("span", "", "Pairwise tournament"),
     );
     container.append(flow, phaseLabels);
   }
@@ -119,7 +119,7 @@
         .join(". "),
     });
     svg.append(
-      svgElement("text", { class: "evidence-axis-title", x: 160, y: 30 }, "Rank correlation between the AI ranking and each human record"),
+      svgElement("text", { class: "evidence-axis-title", x: 160, y: 30 }, "Kendall's τ between the AI ranking and each of ICML's records"),
     );
 
     [0, 0.25, 0.5, 0.75, 1].forEach((value) => {
@@ -280,7 +280,7 @@
       );
     });
     svg.append(
-      svgElement("text", { class: "evidence-axis-caption", x: (left + right) / 2, y: height - 14, "text-anchor": "middle" }, "Score given by the paper's human reviewers. Circle size shows how many papers received that score."),
+      svgElement("text", { class: "evidence-axis-caption", x: (left + right) / 2, y: height - 14, "text-anchor": "middle" }, "Mean score from the paper's reviewers (4 = weak accept, 5 = accept). Circle size shows how many papers had that mean."),
     );
     container.append(svg);
   }
@@ -389,10 +389,10 @@
       svgElement(
         "text",
         { class: "evidence-axis-title", x: 24, y: 30 },
-        "How much each thing the AI panel scored moved each verdict",
+        "How the AI's six axis scores relate to the AI's overall score and to the reviewer score",
       ),
-      svgElement("text", { class: "axis-slope-head", x: leftColumn, y: 64, "text-anchor": "middle" }, "The AI's own ordering"),
-      svgElement("text", { class: "axis-slope-head", x: rightColumn, y: 64, "text-anchor": "middle" }, "The human reviewer score"),
+      svgElement("text", { class: "axis-slope-head", x: leftColumn, y: 64, "text-anchor": "middle" }, "AI's overall score"),
+      svgElement("text", { class: "axis-slope-head", x: rightColumn, y: 64, "text-anchor": "middle" }, "Mean reviewer score"),
     );
 
     [0, 0.2, 0.4, 0.6, 0.8].forEach((value) => {
@@ -436,12 +436,12 @@
       svgElement(
         "text",
         { class: "evidence-axis-caption", x: 24, y: height - 34 },
-        `Six axes scored on every one of the ${weights.finalists} finalists that reached the frontier panel.`,
+        `Computed over the ${weights.finalists} main-track finalists scored by the three frontier models.`,
       ),
       svgElement(
         "text",
         { class: "evidence-axis-caption", x: 24, y: height - 14 },
-        "Predicted field impact is the AI's first criterion and the reviewers' last. Novelty is the reverse.",
+        "Predicted field impact is first on the models' side and last on the reviewers' side. Novelty is fifth and first.",
       ),
     );
     host.append(svg);
@@ -469,7 +469,7 @@
       "aria-label": "Each recurring line of argument, plotted against how much it moves the AI ranking and the reviewer score.",
     });
     svg.append(
-      svgElement("text", { class: "evidence-axis-title", x: 24, y: 30 }, "How much each argument the AI makes moves each verdict"),
+      svgElement("text", { class: "evidence-axis-title", x: 24, y: 30 }, "How each recurring argument relates to the AI ranking and to the reviewer score"),
       svgElement("rect", { class: "reason-key-swatch is-ai", x: 336, y: 50, width: 26, height: 11 }),
       svgElement("text", { class: "reason-key-label", x: 370, y: 60 }, "the AI's ranking of all 6,341 papers"),
       svgElement("rect", { class: "reason-key-swatch is-human", x: 336, y: 72, width: 26, height: 11 }),
@@ -490,7 +490,7 @@
       group.append(svgElement("title", {}, `"${row.label}": ${row.ai.toFixed(3)} against the AI ranking, ${row.human.toFixed(3)} against the reviewer score`));
       group.append(
         svgElement("text", { class: "reason-row-label", x: left - 22, y: y + 4, "text-anchor": "end" }, row.label),
-        svgElement("text", { class: "reason-row-kind", x: left - 22, y: y + 22, "text-anchor": "end" }, row.kind === "reward" ? "raised in a paper's favour" : "raised against a paper"),
+        svgElement("text", { class: "reason-row-kind", x: left - 22, y: y + 22, "text-anchor": "end" }, row.kind === "reward" ? "raised in a paper's favor" : "raised against a paper"),
         svgElement("rect", { class: "reason-bar is-ai", x: left, y: y - 9, width: Math.max(2, length(row.ai)), height: 14 }),
         svgElement("text", { class: "reason-value is-ai", x: left + length(row.ai) + 12, y: y + 3 }, magnitude(row.ai)),
         svgElement("rect", { class: "reason-bar is-human", x: left, y: y + 9, width: Math.max(2, length(row.human)), height: 14 }),
@@ -500,8 +500,8 @@
     });
 
     svg.append(
-      svgElement("text", { class: "evidence-axis-caption", x: 24, y: height - 38 }, "Strength of the association, counting how many of the four models reached for that argument on each paper."),
-      svgElement("text", { class: "evidence-axis-caption", x: 24, y: height - 18 }, "Teal lifts a paper in the AI's ranking and red lowers it. Every argument that moves the AI leaves the reviewer score almost untouched."),
+      svgElement("text", { class: "evidence-axis-caption", x: 24, y: height - 38 }, "Rank correlation between the number of models (0 to 4) that made the argument about a paper and each outcome."),
+      svgElement("text", { class: "evidence-axis-caption", x: 24, y: height - 18 }, "Colored bars: teal for arguments in a paper's favor, red for arguments against it. Grey bars: the reviewer score."),
     );
     host.append(svg);
   }
@@ -529,8 +529,8 @@
       "aria-label": "Agreement measured inside a single batch of eight papers that every model read together.",
     });
     svg.append(
-      svgElement("text", { class: "evidence-axis-title", x: 24, y: 30 }, "Reading the same eight papers, who does a model order them like?"),
-      svgElement("text", { class: "evidence-axis-caption", x: 24, y: 54 }, `Averaged over ${block.batches.toLocaleString()} batches. Every model saw the same batches, so this holds the context identical on both sides.`),
+      svgElement("text", { class: "evidence-axis-title", x: 24, y: 30 }, "Agreement within a single batch of eight papers"),
+      svgElement("text", { class: "evidence-axis-caption", x: 24, y: 54 }, `Averaged over ${block.batches.toLocaleString()} batches. Every model saw the same batches, so the context is identical on both sides.`),
     );
 
     [0, 0.1, 0.2, 0.3, 0.4, 0.5].forEach((value) => {
@@ -555,7 +555,7 @@
     });
 
     svg.append(
-      svgElement("text", { class: "evidence-axis-caption", x: 24, y: height - 14 }, "Rank agreement on the eight papers in front of it, so no ranking-wide effect can flatter either comparison."),
+      svgElement("text", { class: "evidence-axis-caption", x: 24, y: height - 14 }, "Rank correlation computed within each batch, then averaged across batches."),
     );
     host.append(svg);
   }
@@ -592,7 +592,7 @@
       "aria-label": "Rank correlation between every pair of judges, including the human reviewers.",
     });
     svg.append(
-      svgElement("text", { class: "evidence-axis-title", x: 24, y: 30 }, "How much each judge agrees with each other judge"),
+      svgElement("text", { class: "evidence-axis-title", x: 24, y: 30 }, "Rank correlation between each pair of judges"),
       svgElement("text", { class: "evidence-axis-caption", x: 24, y: 54 }, `Rank correlation over the same ${agreement.papers.toLocaleString()} main-track papers.`),
     );
 
@@ -661,8 +661,8 @@
 
     const body = element("tbody");
     [
-      ["gems", `Papers the AI ranked near the top that ICML left as posters (${cases.gemPool} in total)`, "why it did not rank this lower"],
-      ["blindSpots", `Papers the AI ranked near the bottom that ICML chose as orals (${cases.blindSpotPool} in total)`, "why it did not rank this higher"],
+      ["gems", `ICML posters the AI ranked near the top (${cases.gemPool} in total)`, "why the AI did not rank it lower"],
+      ["blindSpots", `ICML orals and spotlights the AI ranked near the bottom (${cases.blindSpotPool} in total)`, "why the AI did not rank it higher"],
     ].forEach(([key, caption, prompt]) => {
       const groupRow = element("tr", "divergence-group");
       const groupCell = element("th", "", caption);
@@ -680,7 +680,7 @@
         }
         tr.append(paper);
         const outcome = element("td", `divergence-tier tier-${row.tier}`);
-        outcome.append(element("span", "", humanTierLabel(row.tier).replace("Human ", "")));
+        outcome.append(element("span", "", humanTierLabel(row.tier).replace("ICML ", "")));
         if (row.reviewerScore !== null) {
           outcome.append(element("small", "divergence-score", row.reviewerScore.toFixed(2)));
         }
@@ -728,13 +728,66 @@
         element("span", `human-tag human-${paper.human.tier}`, humanTierLabel(paper.human.tier)),
       );
       if (paper.human.reviewerMean !== null) {
-        meta.append(element("span", "review-score", `Human review ${paper.human.reviewerMean.toFixed(2)}`));
+        meta.append(element("span", "review-score", `Human reviewer score (mean) ${paper.human.reviewerMean.toFixed(2)} / 6`));
       }
       meta.append(paperLinkCue(paper));
       content.append(title, element("p", "rank-summary", paper.whyRankedHere), meta);
       row.append(rank, content);
       container.append(row);
     });
+  }
+
+  function renderReviewerScale() {
+    const host = document.querySelector("#reviewer-scale");
+    const caption = document.querySelector("#reviewer-scale-caption");
+    const scale = data.reviewerScale;
+    if (!host || !caption) return;
+    if (!scale) {
+      host.closest(".score-key").hidden = true;
+      return;
+    }
+    const coverage = data.results && data.results.main_track_full_coverage;
+    const mean = coverage && coverage.reviewer_overall_mean;
+    caption.append(
+      element("strong", "", "Reading the reviewer scores. "),
+      document.createTextNode(
+        `ICML 2026 reviewers gave each paper an overall score from 1 to 6. The bars show how often ` +
+          `each score was used in the ${scale.reviews.toLocaleString()} reviews of the ` +
+          `${scale.papers.toLocaleString()} accepted main-track papers` +
+          (mean ? `, where the average paper's mean score was ${mean.toFixed(2)}.` : "."),
+      ),
+    );
+
+    const widest = Math.max(...scale.levels.map((level) => level.share));
+    const table = element("table");
+    const head = element("thead");
+    const headRow = element("tr");
+    headRow.append(
+      element("th", "", "Score"),
+      element("th", "", "Official label"),
+      element("th", "", "Share of reviews"),
+    );
+    head.append(headRow);
+    const body = element("tbody");
+    // Highest score first, as on the official review form.
+    [...scale.levels].reverse().forEach((level) => {
+      const row = element("tr");
+      row.title = `${level.reviews.toLocaleString()} reviews scored ${level.score} (${level.label})`;
+      const bar = element("span", "score-key-bar");
+      bar.style.width = `${(level.share / widest) * 100}%`;
+      const track = element("span", "score-key-track");
+      track.append(bar);
+      const shareCell = element("td", "score-key-share");
+      shareCell.append(track, element("span", "score-key-value", `${(level.share * 100).toFixed(1)}%`));
+      row.append(
+        element("th", "", String(level.score)),
+        element("td", "score-key-label", level.label),
+        shareCell,
+      );
+      body.append(row);
+    });
+    table.append(head, body);
+    host.append(table);
   }
 
   function awardCard(paper) {
@@ -764,11 +817,11 @@
     });
     const posthoc = element("div", "posthoc-line");
     posthoc.append(
-      element("span", "", "Post hoc human outcome"),
-      element("strong", "", humanTierLabel(paper.human.tier).replace("Human ", "")),
+      element("span", "", "ICML outcome, shown post hoc"),
+      element("strong", "", humanTierLabel(paper.human.tier).replace("ICML ", "")),
     );
     if (paper.human.reviewerMean !== null) {
-      posthoc.append(element("span", "", `review mean ${paper.human.reviewerMean.toFixed(2)}`));
+      posthoc.append(element("span", "", `Human reviewer score (mean) ${paper.human.reviewerMean.toFixed(2)} / 6`));
     }
     posthoc.append(paperLinkCue(paper));
     copy.append(scores, posthoc);
@@ -877,6 +930,7 @@
   renderMosaic();
   renderMethodDiagram();
   renderTopTen();
+  renderReviewerScale();
   renderCorrelationScale();
   renderRecallByTier();
   renderReviewerVsRank();

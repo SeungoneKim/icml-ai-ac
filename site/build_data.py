@@ -306,7 +306,7 @@ def build_preference_comparison(
         "classLabels": CLASS_LABELS,
         "sets": [
             {"key": "corpus", "label": "All main-track papers", **class_mix(scored, class_by_paper)},
-            {"key": "human", "label": "Human orals and spotlights", **class_mix(honored, class_by_paper)},
+            {"key": "human", "label": "ICML orals and spotlights", **class_mix(honored, class_by_paper)},
             {"key": "ai", "label": f"AI's top {matched_n}", **class_mix(ai_top, class_by_paper)},
         ],
     }
@@ -323,6 +323,48 @@ def score_histogram(values: list[float]) -> list[list[float]]:
         key = round(float(value), 4)
         tally[key] = tally.get(key, 0) + 1
     return [[key, tally[key]] for key in sorted(tally)]
+
+
+# Labels from the ICML 2026 reviewer form's overall recommendation field:
+# https://icml.cc/Conferences/2026/ReviewerInstructions
+REVIEWER_SCALE = [
+    (1, "Strong reject"),
+    (2, "Reject"),
+    (3, "Weak reject"),
+    (4, "Weak accept"),
+    (5, "Accept"),
+    (6, "Strong accept"),
+]
+
+
+def build_reviewer_scale(*, metadata_dir: Path) -> dict[str, Any] | None:
+    """How often each point of the official scale was used on accepted main-track papers.
+
+    Readers meet mean reviewer scores (3.75, 5.25) before any other context, so the
+    site shows the scale's labels next to how individual reviews actually fell on it.
+    """
+    manifest_path = metadata_dir / "icml_2026_scoring_manifest_main_track.jsonl"
+    if not manifest_path.exists():
+        return None
+    counts = {score: 0 for score, _ in REVIEWER_SCALE}
+    papers = 0
+    for row in read_jsonl(manifest_path):
+        values = ((row.get("extra") or {}).get("openreview_scores") or {}).get("overall_values") or []
+        if values:
+            papers += 1
+        for value in values:
+            if float(value) not in counts:
+                raise ValueError(f"Reviewer score {value} is off the 1-6 scale")
+            counts[int(value)] += 1
+    reviews = sum(counts.values())
+    return {
+        "papers": papers,
+        "reviews": reviews,
+        "levels": [
+            {"score": score, "label": label, "reviews": counts[score], "share": counts[score] / reviews}
+            for score, label in REVIEWER_SCALE
+        ],
+    }
 
 
 def reviewer_score_vs_rank(
@@ -1186,49 +1228,49 @@ def build_method_diagram(tournament: dict[str, Any]) -> dict[str, Any]:
             {
                 "stage": "01",
                 "count": 6617,
-                "title": "Blind and route",
+                "title": "Anonymize and label",
                 "models": "Gemini 3.1 Flash Lite",
-                "detail": "Identity-redacted first nine pages",
+                "detail": "Author names removed; contribution type labeled",
                 "tone": "source",
             },
             {
                 "stage": "02",
                 "count": 6617,
-                "title": "Cheap recall ensemble",
+                "title": "First-pass ranking",
                 "models": "Nemotron 3 Ultra · Gemini 3.5 Flash Lite · GPT-5.6 Luna · Grok 4.3",
-                "detail": "Four judges, two contexts each",
+                "detail": "Each paper ranked in 2 batches of 8, by each model",
                 "tone": "cheap",
             },
             {
                 "stage": "03",
                 "count": 1442,
-                "title": "Strong semifinal",
+                "title": "Second-pass ranking",
                 "models": "GPT-5.6 Terra + Claude Sonnet 5",
-                "detail": "Two listwise partitions per judge",
+                "detail": "Same batch design, stronger models",
                 "tone": "strong",
             },
             {
                 "stage": "04",
                 "count": 250,
-                "title": "Frontier PDF panel",
+                "title": "Full-paper judgments",
                 "models": "GPT-5.6 Sol + Claude Fable 5 + Gemini 3.1 Pro",
-                "detail": "750 independent judgment cards",
+                "detail": "750 written judgments, 3 per paper",
                 "tone": "frontier",
             },
             {
                 "stage": "05",
                 "count": 172,
-                "title": "Swiss pool",
-                "models": "GPT-5.6 Sol pairwise judge",
+                "title": "Swiss-system rounds",
+                "models": "GPT-5.6 Sol, pairwise",
                 "detail": f"10 rounds · {swiss_pairs:,} pairs",
                 "tone": "swiss",
             },
             {
                 "stage": "06",
                 "count": 60,
-                "title": "All-pairs playoff",
-                "models": "GPT-5.6 Sol pairwise judge",
-                "detail": f"{complete_playoff_pairs:,} complete pair graph",
+                "title": "Round robin",
+                "models": "GPT-5.6 Sol, pairwise",
+                "detail": f"Every pair compared · {complete_playoff_pairs:,} pairs",
                 "tone": "playoff",
             },
         ],
@@ -1362,6 +1404,11 @@ def build(
         ),
         "results": summary,
         "papers": papers,
+        **(
+            {"reviewerScale": reviewer_scale}
+            if (reviewer_scale := build_reviewer_scale(metadata_dir=metadata))
+            else {}
+        ),
         **(
             {"preferenceComparison": preference_comparison}
             if (preference_comparison := build_preference_comparison(manifest, scores_dir=scores))
