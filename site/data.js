@@ -36,49 +36,49 @@ window.ICML_AI_AC_DATA = {
       {
         "stage": "01",
         "count": 6617,
-        "title": "Blind and route",
+        "title": "Anonymize and label",
         "models": "Gemini 3.1 Flash Lite",
-        "detail": "Identity-redacted first nine pages",
+        "detail": "Author names removed; contribution type labeled",
         "tone": "source"
       },
       {
         "stage": "02",
         "count": 6617,
-        "title": "Cheap recall ensemble",
+        "title": "First-pass ranking",
         "models": "Nemotron 3 Ultra · Gemini 3.5 Flash Lite · GPT-5.6 Luna · Grok 4.3",
-        "detail": "Four judges, two contexts each",
+        "detail": "Each paper ranked in 2 batches of 8, by each model",
         "tone": "cheap"
       },
       {
         "stage": "03",
         "count": 1442,
-        "title": "Strong semifinal",
+        "title": "Second-pass ranking",
         "models": "GPT-5.6 Terra + Claude Sonnet 5",
-        "detail": "Two listwise partitions per judge",
+        "detail": "Same batch design, stronger models",
         "tone": "strong"
       },
       {
         "stage": "04",
         "count": 250,
-        "title": "Frontier PDF panel",
+        "title": "Full-paper judgments",
         "models": "GPT-5.6 Sol + Claude Fable 5 + Gemini 3.1 Pro",
-        "detail": "750 independent judgment cards",
+        "detail": "750 written judgments, 3 per paper",
         "tone": "frontier"
       },
       {
         "stage": "05",
         "count": 172,
-        "title": "Swiss pool",
-        "models": "GPT-5.6 Sol pairwise judge",
+        "title": "Swiss-system rounds",
+        "models": "GPT-5.6 Sol, pairwise",
         "detail": "10 rounds · 860 pairs",
         "tone": "swiss"
       },
       {
         "stage": "06",
         "count": 60,
-        "title": "All-pairs playoff",
-        "models": "GPT-5.6 Sol pairwise judge",
-        "detail": "1,770 complete pair graph",
+        "title": "Round robin",
+        "models": "GPT-5.6 Sol, pairwise",
+        "detail": "Every pair compared · 1,770 pairs",
         "tone": "playoff"
       }
     ],
@@ -2811,6 +2811,48 @@ window.ICML_AI_AC_DATA = {
       }
     }
   ],
+  "reviewerScale": {
+    "papers": 6341,
+    "reviews": 24378,
+    "levels": [
+      {
+        "score": 1,
+        "label": "Strong reject",
+        "reviews": 28,
+        "share": 0.001148576585445894
+      },
+      {
+        "score": 2,
+        "label": "Reject",
+        "reviews": 501,
+        "share": 0.02055131676101403
+      },
+      {
+        "score": 3,
+        "label": "Weak reject",
+        "reviews": 2896,
+        "share": 0.11879563540897531
+      },
+      {
+        "score": 4,
+        "label": "Weak accept",
+        "reviews": 13753,
+        "share": 0.5641562064156206
+      },
+      {
+        "score": 5,
+        "label": "Accept",
+        "reviews": 6866,
+        "share": 0.28164738698826813
+      },
+      {
+        "score": 6,
+        "label": "Strong accept",
+        "reviews": 334,
+        "share": 0.013700877840676019
+      }
+    ]
+  },
   "preferenceComparison": {
     "matchedN": 536,
     "classLabels": {
@@ -2854,7 +2896,7 @@ window.ICML_AI_AC_DATA = {
       },
       {
         "key": "human",
-        "label": "Human orals and spotlights",
+        "label": "ICML orals and spotlights",
         "n": 536,
         "counts": {
           "core_ml_algorithm": 170,

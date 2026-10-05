@@ -169,6 +169,43 @@ a {
   line-height: 1.42;
 }
 
+.tldr {
+  max-width: 790px;
+  margin: 36px 0 0;
+  padding: 22px 26px;
+  border-left: 3px solid var(--red);
+  background: var(--soft);
+  color: #2f2f2f;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.tldr-label {
+  margin: 0 0 10px;
+  color: var(--red-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.tldr ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tldr li {
+  margin: 0 0 9px;
+  padding-left: 4px;
+}
+
+.tldr-map {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .paper-mosaic-band {
   overflow: hidden;
   padding: 24px 0 34px;
@@ -186,10 +223,10 @@ a {
 }
 
 .mosaic-caption {
-  width: min(1380px, calc(100% - 48px));
+  width: min(860px, calc(100% - 48px));
   margin: 28px auto 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
   text-align: center;
 }
@@ -476,6 +513,98 @@ a {
 .method-note {
   margin: 30px 0 0;
   color: #464646;
+}
+
+.method-note strong {
+  color: var(--ink);
+}
+
+.section-lede {
+  max-width: 760px;
+  margin: 0;
+  color: #464646;
+}
+
+.section-note {
+  max-width: 760px;
+  margin: 26px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.score-key {
+  max-width: 640px;
+  margin: 30px 0 0;
+  padding: 18px 20px 12px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+}
+
+.score-key-caption {
+  margin: 0 0 12px;
+  color: #464646;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.score-key-caption strong {
+  color: var(--ink);
+}
+
+.score-key-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-key-table thead th {
+  padding: 0 12px 6px 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.score-key-table tbody th {
+  width: 44px;
+  padding: 4px 0;
+  font-weight: 800;
+  text-align: left;
+}
+
+.score-key-label {
+  width: 120px;
+  padding: 4px 12px 4px 0;
+  color: #464646;
+  white-space: nowrap;
+}
+
+.score-key-share {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.score-key-track {
+  flex: 1;
+}
+
+.score-key-bar {
+  display: block;
+  min-width: 2px;
+  height: 12px;
+  border-radius: 0 4px 4px 0;
+  background: #55554f;
+}
+
+.score-key-value {
+  width: 44px;
+  color: var(--muted);
+  text-align: right;
 }
 
 .stage-list {
@@ -1408,6 +1537,15 @@ a {
 
   .dek {
     font-size: 20px;
+  }
+
+  .tldr {
+    padding: 18px 18px 18px 20px;
+    font-size: 15px;
+  }
+
+  .score-key {
+    padding: 16px 14px 10px;
   }
 
   .paper-mosaic-band {

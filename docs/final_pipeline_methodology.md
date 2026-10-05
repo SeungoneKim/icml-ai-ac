@@ -16,12 +16,12 @@ The two numbering schemes correspond as follows:
 
 | Results site | This document |
 | --- | --- |
-| Stage 01, Blind and route | Paper Representation (identity redaction) and Stage 1 |
-| Stage 02, Cheap recall ensemble | Stage 2 |
-| Stage 03, Strong semifinal | Stages 3 and 4 |
-| Stage 04, Frontier PDF panel | Stage 5 |
-| Stage 05, Swiss pool | Stage 6, Swiss phase |
-| Stage 06, All-pairs playoff | Stage 6, all-pairs phase |
+| Stage 01, Anonymize and label | Paper Representation (identity redaction) and Stage 1 |
+| Stage 02, First-pass ranking | Stage 2 |
+| Stage 03, Second-pass ranking | Stages 3 and 4 |
+| Stage 04, Full-paper judgments | Stage 5 |
+| Stage 05, Swiss-system rounds | Stage 6, Swiss phase |
+| Stage 06, Round robin | Stage 6, all-pairs phase |
 | (reported as results, not a stage) | Stage 7 |
 
 Use this document's numbering when referring to code, commands, audits, or
